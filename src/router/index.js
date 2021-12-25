@@ -35,7 +35,23 @@ const routes = [
     path: '/panier',
     name: 'Panier',
     component: () => import(/* webpackChunkName: "panier" */ '../views/Panier.vue')
-  }
+  },
+  {
+    path: '/commande',
+    name: 'Commande',
+    component: () => import(/* webpackChunkName: "Commande" */ '../views/Commande.vue')
+  },
+  {
+    path: '/AllShops',
+    name: 'AllShops',
+    component: () => import(/* webpackChunkName: "ComandDetail" */ '../views/AllShops.vue')
+  },
+  {
+    path: '/AllShopsDetails/:id',
+    name: 'AllShopsDetails',
+    props: true,
+    component: () => import(/* webpackChunkName: "ComandDetail" */ '../views/AllShopsDetails.vue')
+  },
 ]
 
 const router = new VueRouter({

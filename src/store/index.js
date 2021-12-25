@@ -22,7 +22,10 @@ export default new Vuex.Store({
     personalProduct:{
     },
     prodID:"",
-    cartInfo:{}
+    cartInfo:{},
+    orderID:"",
+    showModalCommandDetail:false,
+    orderItems:[]
   },
   mutations: {
     updateField,
@@ -71,7 +74,9 @@ export default new Vuex.Store({
       state.prodID=value
     },
     
-    
+    updateOrderItems(state,detailArr){
+      state.orderItems=detailArr;
+    }
   },
   actions: {
     //Add item to cart
@@ -93,8 +98,27 @@ export default new Vuex.Store({
         console.log(error.response);
       //   this.errorMessage = error.response.data.error.messages.errors;
       })
+    },
     
-    }
+    //Order details
+    getOrderDetail({commit,state}) {
+      axios
+        .get(`https://api-moshop.molengeek.pro/api/v1/order/${state.orderID}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          // state.orderItems=response.data.data
+          commit("updateOrderItems", response.data.data.order_items);
+
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    },
+
   },
   getters: {
     getField,

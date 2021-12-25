@@ -19,44 +19,50 @@
       </div>
     </div>
       <!-- Err mess -->
-    <p class="text-2xl font-semibold mb-12">{{shopName }}</p>
-    <div class="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1" v-if="items">
+      <p class="text-2xl font-semibold">
+          {{ShopName}}
+      </p>
+       <div
+      class="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 mt-5"
+      v-if="ShopProducts"
+    >
       <div
-        v-for="item in items"
-        :key="item.id"
+        v-for="(item, i) in ShopProducts"
+        :key="i"
         class="max-w-xs mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800 mb-10"
       >
-        <!-- <div class="flex justify-between text-xs">
-            <p>{{item.created_at}}</p>
-            <p>{{item.updated_at}}</p>
-        </div> -->
         <div class="px-4 py-2">
           <h1
             class="text-2xl font-bold text-gray-800 uppercase dark:text-white"
           >
             {{ item.name }}
           </h1>
-          <p v-if="item.description" class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          <p
+            v-if="item.description"
+            class="mt-1 text-sm text-gray-600 dark:text-gray-400"
+          >
             {{ item.description.substring(0, 80) + "..." }}
           </p>
         </div>
         <img
           width="300px"
           class="object-cover w-full h-48"
-          :src="`https://api-moshop.molengeek.pro/${item.cover_path}`"
-          alt="Product"
+          :src="`https://api-moshop.molengeek.pro${item.cover_path}`"
+          alt="product"
         />
 
-        <div class="flex items-center justify-between px-4 py-2 bg-gray-900">
-          <h1 class="text-lg font-bold text-white">${{ item.price }}</h1>
-          <!-- Add to cart -->
-          <button
+        <div class="flex items-center justify-between px-4 py-2 bg-green-900">
+          <h1 class="text-lg font-bold text-white">
+            ${{ item.price }}
+          </h1>
+
+        <button
           @click="addToCart(item.id)"
             class="px-2 py-1 text-xs font-semibold text-gray-900 uppercase transition-colors duration-200 transform bg-white rounded hover:bg-gray-200 focus:bg-gray-400 focus:outline-none"
           >
             Add to cart
           </button>
-            <input v-model="cartInfo.quantity" min="1" class="rounded-xl w-8" type="number">
+          <input v-model="cartInfo.quantity" min="1" class="rounded-xl w-8" type="number">
         </div>
       </div>
     </div>
@@ -65,30 +71,48 @@
 
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
 import { mapFields } from "vuex-map-fields";
 
-
 export default {
-    name: 'ShopItems',
-    data() {
-        return {
-        shopName:"",
-        shoWErrMessage:false
-        }
-    },
-    methods: {
-        productsRequest(){
-        axios
-        .get('https://api-moshop.molengeek.pro/api/v1/mg/shop')
-        .then((response) => {
-            console.log(response.data);
-            this.shopName=response.data.data.name
-            this.$store.commit("getProducts", response.data.data);
-        })
-        },
+  name: "AllShopsDetails",
+  data() {
+      return {
+          ShopName:"",
+          ShopProducts:[],
+            shoWErrMessage:false
 
-        addToCart(otherProdID){
+      }
+  },
+  props: {
+    id: {
+      type: Number && String,
+      required: true,
+    },
+  },
+  mounted() {
+      this.getShopDetails();
+  },
+  methods: {
+      getShopDetails(){
+           axios
+        .get(
+          `https://api-moshop.molengeek.pro/api/v1/shop/${this.id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data.data); 
+          this.ShopName= response.data.data.name       
+          this.ShopProducts= response.data.data.products      
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+      },
+      addToCart(otherProdID){
             //Si on selectionne la quantité la requette se fait, sinon message d'alerte erreur
             if (this.cartInfo.quantity) {
                 //On recupere l'id de l'item sur lequel on a cliqué
@@ -101,19 +125,14 @@ export default {
             }else{
                 this.shoWErrMessage=true
             }
-
-        }
-    },
-    mounted() {
-        this.productsRequest()
-    },
-    computed: {
-        ...mapState(['items']),
+      }
+  },
+  computed: {
         ...mapFields(["cartInfo"]),
 
-    },
-
-}
+      }
+      
+};
 </script>
 
 <style></style>

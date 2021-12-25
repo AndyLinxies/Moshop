@@ -61,7 +61,7 @@
 
               <div class="flex items-center mt-4 md:mt-0">
                 <router-link
-                to="/panier"
+                  to="/panier"
                   class="hidden mx-4 text-gray-600 transition-colors duration-200 transform md:block dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-400 focus:text-gray-700 dark:focus:text-gray-400 focus:outline-none"
                   aria-label="show notifications"
                 >
@@ -77,6 +77,26 @@
                       stroke-linejoin="round"
                       stroke-width="2"
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </router-link>
+                <!-- commandeq -->
+                <router-link
+                  to="/commande"
+                  class="mr-2 rounded-full flex items-center px-1 py-1 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-yellow-600 hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
                 </router-link>
@@ -107,23 +127,58 @@
                 <div class="flex items-center py-2 -mx-1 md:mx-0">
                   <router-link
                     to="/login"
-                    class="block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200 transform bg-gray-500 rounded-md hover:bg-blue-600 md:mx-2 md:w-auto"
-                    ><span @click="handleLoginClick">Login</span>
+                    class="rounded-full block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200 transform bg-green-500 hover:bg-blue-600 md:mx-2 md:w-auto"
+                  >
+                    <span @click="handleLoginClick"
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                        /></svg
+                    ></span>
                   </router-link>
+                  <!-- Deconnection -->
+
+                  <button
+                    @click="logOut"
+                    class="ml-2 p-1 rounded-full font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-red-600 hover:bg-orange-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                  </button>
+                  <!-- Register -->
                   <router-link
                     to="/register"
                     class="block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-600 md:mx-0 md:w-auto"
                   >
                     <span @click="handleRegisterClick">Register</span>
                   </router-link>
-                  <!-- Deconnection -->
-
-                  <button
-                    @click="logOut"
-                    class="ml-2 p-1 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-red-600 rounded-md hover:bg-orange-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                  <router-link
+                    to="/AllShops"
+                    class=" block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200 transform bg-yellow-500 rounded-md hover:bg-yellow-600 md:mx-0 md:w-auto"
                   >
-                    Log Out
-                  </button>
+                    <span>All Shops</span>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -131,7 +186,7 @@
         </div>
       </nav>
     </div>
-    <router-view></router-view>
+    <router-view :key="$route.path"></router-view>
   </div>
 </template>
 
@@ -142,17 +197,20 @@ import { mapMutations } from "vuex";
 
 export default {
   name: "App",
-  components: {
-  },
+  components: {},
   data() {
     return {
-      // picPath:localStorage.getItem('picture_path')
+      // componentKey: 0
     };
   },
   methods: {
     ...mapMutations(["handleLoginClick", "handleRegisterClick", "logOut"]),
-  },
-};
+
+    // forceRerender() {
+    //   this.componentKey += 1
+    // }
+},
+}
 </script>
 
 <style>
