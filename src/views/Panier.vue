@@ -75,8 +75,11 @@
         </div>
       </div>
     </div>
+    <!-- Si rien dans la commande -->
+      <p  v-if="panierArr.length == 0"  class="font-semibold text-2xl">Veuillez Ajouter quelque chose à votre panier</p>
+
     <!-- Valider la commade -->
-    <div  class="w-full flex justify-end mb-10 pr-28">
+    <div v-if="panierArr.length != 0"  class="w-full flex justify-end mb-10 pr-28">
       <button @click="commandPostReq"
         class="flex items-center px-2 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-green-400 rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
       >
@@ -103,49 +106,30 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
+import { mapFields } from 'vuex-map-fields';
+import { mapActions } from 'vuex'
+
 
 export default {
   name: "Panier",
   data() {
     return {
-      cartProductArr: [],
-      alertSuccessShow:false
+      // cartProductArr: [],
+      alertSuccessShow:false,
+      panierArr:[],
     };
   },
 
   mounted() {
-    this.getCartProducts();
+    this.getCartProducts()
   },
   methods: {
-    getCartProducts() {
-      axios
-        .get("https://api-moshop.molengeek.pro/api/v1/cart", {
-          headers: {
-            Authorization: "Bearer " + this.connectionToken,
-          },
-        })
-        .then((response) => {
-          console.log(response.data.data);
-          this.cartProductArr = response.data.data;
-        });
-    },
-
+    ...mapActions(['getCartProducts']),
+  
     //delete product from cart
     deleteProductFromCart(id) {
       console.log("Product id in cart", id);
       //Pas de requete au niveau du serveur pour supprimer du panier
-      // axios
-      // .delete(`https://api-moshop.molengeek.pro/api/v1/cart/${id}`, {
-      //   headers: {
-      //     Authorization: "Bearer " + localStorage.getItem("token"),
-      //   },
-      // })
-      // .then((response) => {
-      //   console.log("elément retiré du panier " + response.data);
-      // })
-      // .catch((error) => {
-      //   console.log(error.response);
-      // });
     },
     commandPostReq() {
       console.log("post req");
@@ -158,7 +142,11 @@ export default {
       })
       .then((response) => {
         console.log( response.data);
+        this.panierArr=response.data
         this.alertSuccessShow=true
+        //Pour relancer la requete get afin de voir les modis sans devoir recharger la page
+        this.$store.dispatch("getCartProducts");
+
       })
       .catch((error) => {
         console.log(error.response);
@@ -166,6 +154,7 @@ export default {
     },
   },
   computed: {
+    ...mapFields(['cartProductArr']),
     ...mapState(["connectionToken"]),
   },
 };

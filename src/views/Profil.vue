@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="cardUser" v-if="connectionToken && userID">
+    <div class="cardUser" v-if="connectionToken">
       <div
         class="max-w-xs mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800"
       >
@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-if="!connectionToken && !userID">
         <p class="text-center text-3xl font-semibold">Veuillez vous connecter</p>
     </div>
     <UserEdit />
@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState,mapMutations } from "vuex";
 import UserEdit from '../components/UserEditModal.vue'
 
@@ -45,37 +44,18 @@ export default {
   },
 data() {
     return {
-        infos:""
     }
 },
   mounted() {
-    this.userInfos();
+    this.$store.dispatch("userInfos");
     //   console.log(this.connectionToken);
   },
   methods: {
       ...mapMutations(['toggleModal']),
-    userInfos() {
-      axios
-        .get("https://api-moshop.molengeek.pro/api/v1/user", {
-          headers: {
-            "Authorization": "Bearer " + this.connectionToken,
-          },
-        })
-        .then((response) => {
-        //   console.log(response.data.data.profile.picture_path);
-        console.log(response.data.data.profile.id)
-        localStorage.setItem('userID',response.data.data.profile.id)
-          this.$store.commit("updateUserInfo",this.infos)
-          this.infos=response.data.data.profile;
-        // localStorage.setItem('picture_path',response.data.data.profile.picture_path)
-
-      // localStorage.remove('nom')
-
-        });
-    },
+    
   },
   computed: {
-    ...mapState(["connectionToken","userID"]),
+    ...mapState(["connectionToken","userID","infos"]),
   },
 };
 </script>

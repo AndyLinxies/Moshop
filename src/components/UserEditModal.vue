@@ -97,13 +97,13 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleModal']),
+
+    //Save text infos
     saveEdit(){
-        // this.formData.append("id", this.userID);
         let userData = {
             firstname: this.firstName,
             lastname: this.lastName,
         }
-        // this.formData.append("picture", this.Images);
         axios
           .put(
             "https://api-moshop.molengeek.pro/api/v1/user",
@@ -117,6 +117,8 @@ export default {
           .then((response) => {
             console.log(response);
             // this.successMessage=response.data.message
+            this.$store.dispatch("userInfos");
+
           })
           .catch((error) => {
             console.log(error.response);
@@ -127,6 +129,8 @@ export default {
     uploadFile(){
         this.Images = this.$refs.file.files[0];
     },
+
+    //Picture info
     savePicEdit(){
         this.formData.append("picture", this.Images);
 
@@ -142,11 +146,10 @@ export default {
           )
           .then((response) => {
             console.log(response);
-            // this.successMessage=response.data.message
+            this.$store.dispatch("userInfos");
           })
           .catch((error) => {
             console.log(error.response);
-            // this.errorMessage=error.response.data.error.messages.errors
           });
     },
     
@@ -154,7 +157,6 @@ export default {
   computed: {
       ...mapState(["showModal"]),
       ...mapFields(["firstName", "lastName",])
-     
   
   }
 }

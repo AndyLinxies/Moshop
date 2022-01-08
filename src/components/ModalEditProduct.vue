@@ -166,6 +166,7 @@ export default {
         )
         .then((response) => {
           console.log(response);
+          this.$store.dispatch("personalShop");
         })
         .catch((error) => {
           console.log(error.response);
@@ -194,6 +195,7 @@ export default {
         .then((response) => {
           console.log(response);
           // this.successMessage=response.data.message
+          this.$store.dispatch("addToCartRequest");
         })
         .catch((error) => {
           console.log(error.response);

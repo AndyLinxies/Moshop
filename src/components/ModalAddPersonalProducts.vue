@@ -124,6 +124,8 @@ import axios from "axios";
 export default {
   name: "ProductModal",
 
+  
+
   data() {
     return {
       showModal: false,
@@ -141,6 +143,8 @@ export default {
       formData.append("price", +this.personalProduct.price);
       formData.append("cover", this.Images);
 
+      //  
+      //
       //requete pour rajout
       axios
         .post(
@@ -153,8 +157,11 @@ export default {
         )
         .then((response) => {
           console.log(response);
-          this.$route.push('/personalShop')
         //   this.successMessage = response.data.message;
+
+        //Relancer la requete pour le personal shop afin de ne pas devoir recharger la page pour voir le nouvel élément ajouté
+        this.$store.dispatch("personalShop");
+
         })
         .catch((error) => {
           console.log(error.response);

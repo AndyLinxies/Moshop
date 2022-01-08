@@ -3,7 +3,8 @@
     <div>
       <p class="text-2xl font-semibold">{{ shopPersoName }}</p>
       <!-- Modal ajout produit -->
-      <ProductModal />
+      <ProductModal 
+      />
       <!-- Show the products -->
       <div>
         <div
@@ -92,6 +93,7 @@ import axios from "axios";
 import ProductModal from "../components/ModalAddPersonalProducts.vue";
 // import { mapMutations } from "vuex";
 import EditModal from '../components/ModalEditProduct.vue'
+import { mapFields } from 'vuex-map-fields';
 
 export default {
   name: "PersonalShop",
@@ -100,9 +102,7 @@ export default {
   },
   data() {
     return {
-        showEditModal: false,
-      shopPersoName: "",
-      personalShopProducts: "",
+      
     };
   },
   methods: {
@@ -115,24 +115,7 @@ export default {
       this.showEditModal = !this.showEditModal;
     },
     //Monter les produits
-    personalShop() {
-      axios
-        .get("https://api-moshop.molengeek.pro/api/v1/shop", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          console.log(response.data);
-          console.log(response.data.data.name);
-          console.log(response.data.data.products[0].cover_path);
-          this.shopPersoName = response.data.data.name;
-          this.personalShopProducts = response.data.data.products;
-        })
-        .catch((error) => {
-          console.log(error.response);
-        });
-    },
+    //...
 
     //Supprimer le produit
     deleteProduct(id) {
@@ -145,6 +128,8 @@ export default {
         })
         .then((response) => {
           console.log("elément supprimé " + response.data);
+          this.$store.dispatch("personalShop");
+
         })
         .catch((error) => {
           console.log(error.response);
@@ -152,8 +137,16 @@ export default {
     },
   },
   mounted() {
-    this.personalShop();
+    // this.personalShop();
+    //On lance la fonction du action
+    this.$store.dispatch("personalShop");
   },
+  computed: {
+    ...mapFields([
+      "showEditModal",
+      'shopPersoName','personalShopProducts'
+    ]),
+  }
 };
 </script>
 
